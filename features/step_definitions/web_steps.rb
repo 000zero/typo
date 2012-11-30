@@ -41,12 +41,24 @@ Given /^the blog is set up$/ do
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
+  User.create!({:login => 'test',
+                :password => 'bbbbbbbb',
+                :email => 'peterparker@marvel.com',
+                :profile_id => 2,
+                :name => 'test',
+                :state => 'active'})
 end
 
-And /^I am logged into the admin panel$/ do
+And /^I am logged into the (admin|user) panel$/ do |type|
   visit '/accounts/login'
-  fill_in 'user_login', :with => 'admin'
-  fill_in 'user_password', :with => 'aaaaaaaa'
+  
+  if type.eq? 'admin'
+    fill_in 'user_login', :with => 'admin'
+    fill_in 'user_password', :with => 'aaaaaaaa'
+  else
+    fill_in 'user_login', :with => 'test'
+    fill_in 'user_password', :with => 'bbbbbbbb'
+  end 
   click_button 'Login'
   if page.respond_to? :should
     page.should have_content('Login successful')
